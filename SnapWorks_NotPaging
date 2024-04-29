@@ -1,0 +1,74 @@
+<?php
+
+
+
+function drawTable($arrayOfArrays) {
+    echo "<table border=1 cellspacing=1>";
+    echo "<tr>";
+    // loop over the first array and since using FETCH_ASSOC, 
+    // use the keys to produce headers
+    foreach($arrayOfArrays[0] as $key => $value ) {
+          echo "<th>$key</th>";
+        }
+    echo "</tr>";
+    foreach($arrayOfArrays as $array) {
+      echo "<tr>";
+        foreach($array as $data) {
+            echo "<td>$data</td>";
+        }   
+      echo "</tr>";
+    }
+    echo "</table>";
+}
+
+// Color Scheme
+echo '<body style="background-color:MediumSeaGreen;">';
+
+// Assignment Heading
+echo"<h1>CSCI 466 Project - Team Karafun - Section 2</h1>";
+
+//*************************
+// Try block for R1 - R5
+//**************************
+try {
+
+    // DB connection
+    $dsn = "mysql:host=courses;dbname=z1944667";
+    $pdo = new PDO($dsn, "z1944667", "1999Nov09");
+
+    // Errors on
+    $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+
+    $sql_sNameCheck = "SELECT name FROM SINGER;";
+    $rs_sNameCheck = $pdo->prepare($sql_sNameCheck);
+    $rs_sNameCheck->execute();
+    $allNames = $rs_sNameCheck->fetchAll();
+    //print_r($allNames);
+    
+
+    // Signing Up Form Element
+    echo '<form action="https://students.cs.niu.edu/~z1944667/CSCI466/SigningUp.php" method="POST">';
+
+      echo'<h4>Stage Name: <br/><input type="text" name="sName" /><br/>';
+
+      echo '<input type=submit name="Fulfilled" value="Let\'s Rock!"/>';
+   
+     foreach($allNames as $name) {
+        if($name["name"] == $_POST["sName"]) {
+          $existingName = $name["name"];
+          echo "Snap! Someone\'s chosen $existingName please choose another";
+        }
+      }
+      // set new name
+      $newName = $_POST["sName"];
+
+    echo "<form/>";
+
+      
+}
+catch(PDOexception $e) 
+{ // handle that exceptionecho "Connection to database failed: " . 
+    $e->getMessage();
+}
+
+?>
